@@ -10,6 +10,7 @@ var list_of_weather_codes;
 var date;
 var hours;
 var minutes;
+var seconds;
 var formatted_time;
 
 
@@ -59,16 +60,19 @@ function getWeatherData(jsonObj) {
         weather_description = list_of_weather_codes[weather_code].night.description;
         icon = list_of_weather_codes[weather_code].night.image;
     }
-    display();
+    refresh();
 }
 
 function refresh(){
     date = new Date();
     hours = date.getHours();
     minutes = date.getMinutes();
+    seconds = date.getSeconds();
     formatted_time = hours + ":" + (minutes < 10 ? "0" + minutes : minutes);
 
-    if (minutes == 0){
+    console.log(date);
+
+    if (minutes == 0 && seconds == 0){
         sendAPIRequest();
     }
 
@@ -77,17 +81,22 @@ function refresh(){
 
 function display(){
     document.getElementById("time").innerHTML = formatted_time;
+    console.log("Heure : " + formatted_time);
     document.getElementById("temp").innerHTML = temperature;
+    console.log("Température : " + temperature);
     document.getElementById("wind_dir").innerHTML = wind_dir;
+    console.log("Direction du vent : " + wind_dir);
     document.getElementById("wind_speed").innerHTML = wind_speed;
+    console.log("Vitesse du vent : " + wind_speed);
     document.getElementById("weather_description").innerHTML = weather_description;
+    console.log("Temps : " + weather_description);
     document.getElementById("icon").src = icon;
-    console.log("actualized");
+    console.log("Jour ? " + is_day);
+    console.log("Icon : " + icon);
 }
 
 document.addEventListener("DOMContentLoaded", function() {
     sendAPIRequest();
     sendWeatherCodesRequest();
-    refresh();
     setInterval(refresh, 60000);
 })
