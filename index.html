@@ -21,17 +21,21 @@
     <div id="app">
         <!-- Vous pouvez ajouter ici les éléments HTML qui seront manipulés par votre script JavaScript -->
         <!-- Par exemple, les div où vous afficherez les données météo -->
-        <h1>Rennes</h1>
-        <h2>Bretagne, France</h2>
-        <p id="time">heure</p>
-        <p id="temp">température</p>
-        <p id="wind_dir">direction du vent</p>
-        <p id="wind_speed">vitesse du vent</p>
-        <p id="weather_description">temps</p>
-        <img id="icon" src="">
+        <div id="backgroundRect">
+            <div id="canvasRight">
+                <p id="city">Rennes</p>
+                <p id="state">Bretagne, France</p>
+                <p id="temp">température</p>
+                <img id="wind_icon" src="css/assets/wind_icon.png">
+                <p id="wind_speed">vitesse du vent</p>
+            </div>
+            <div id="canvasLeft">
+                <p id="time">heure</p>
+                <img id="weather_icon" src="">
+                <p id="weather_description">temps</p>      
+            </div>
+        </div>
     </div>
-
-    <section></section>
 
 </body>
 </html>
