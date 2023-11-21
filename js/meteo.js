@@ -56,7 +56,7 @@ function sendWeatherCodesRequest(){
 
 function getWeatherData(jsonObj) {    
     temperature = jsonObj.current.temperature_2m + " " + jsonObj.current_units.temperature_2m;
-    wind_dir = jsonObj.current.wind_direction_10m + " " + jsonObj.current_units.wind_direction_10m;
+    wind_dir = jsonObj.current.wind_direction_10m;
     wind_speed = jsonObj.current.wind_speed_10m + " " + jsonObj.current_units.wind_speed_10m;
     weather_code = jsonObj.current.weather_code;
     is_day = jsonObj.current.is_day;
@@ -96,19 +96,18 @@ function display(elements){
             console.log("Heure : " + formatted_time);
             document.getElementById("temp").innerHTML = temperature;
             console.log("Température : " + temperature);
-            // document.getElementById("wind_dir").innerHTML = wind_dir;
-            // console.log("Direction du vent : " + wind_dir);
-            document.getElementById("wind_speed").innerHTML = wind_speed;
+            document.getElementById("windIcon").style.transform = 'rotate('+ wind_dir + 'deg)';
+            console.log("Direction du vent : " + wind_dir);
+            document.getElementById("windSpeed").innerHTML = wind_speed;
             console.log("Vitesse du vent : " + wind_speed);
-            document.getElementById("weather_description").innerHTML = weather_description;
+            document.getElementById("weatherDescription").innerHTML = weather_description;
             console.log("Temps : " + weather_description);
-            document.getElementById("weather_icon").src = weather_icon;
+            document.getElementById("weatherIcon").src = weather_icon;
             console.log("Jour ? " + is_day);
             console.log("Icon : " + weather_icon);
             break;
         case "only hour":
             document.getElementById("time").innerHTML = formatted_time;
-            // console.log("Heure : " + formatted_time);
             break;
     }
 }

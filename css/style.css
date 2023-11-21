@@ -1,31 +1,28 @@
 body {
-    /* Assurez-vous que le corps de la page prend toute la hauteur de la fenêtre */
     height: 100vh;
     margin: 0;
     display: flex;
     align-items: center;
     justify-content: center;
     background-image: url('assets/background.jpg');
-    background-size: cover; /* Assurez-vous que l'image couvre l'ensemble du fond */
-    background-position: center; /* Centrez l'image */
-    background-repeat: no-repeat; /* Empêchez la répétition de l'image */
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
 }
 
 #app {
-    /* Styles pour le conteneur principal */
     color: white;
     font-family: Arial;
 }
 
 #backgroundRect {
-    /* Styles pour le rectangle noir en arrière-plan */
     position: absolute;
     top: 35%;
     left: 35%;
     width: 500px;
     height: 250px;
-    background-color: rgba(0, 0, 0, 0.7); /* Couleur noire avec une opacité de 50% */
-    border-radius: 80px; /* Bords arrondis */
+    background-color: rgba(0, 0, 0, 0.7);
+    border-radius: 80px;
 }
 
 #canvasLeft {
@@ -46,13 +43,13 @@ body {
     margin-bottom: -10px;
 }
 
-#weather_icon {
+#weatherIcon {
     width: 170px;
     margin-left: -20px;
     margin-bottom: -60px;
 }
 
-#weather_description {
+#weatherDescription {
     font-size: 30px;
     text-align: center;
     margin-left: -20px;
@@ -74,13 +71,12 @@ body {
     margin-bottom: 30px;
 }
 
-#wind_icon {
-    margin-bottom: 0px;
+#windIcon {
     margin-left: 10px;
 }
 
-#wind_speed {
-    margin-top: -35px;
+#windSpeed {
+    margin-top: -45px;
     margin-left: 60px;
     font-size: 32px;
 }

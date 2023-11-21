@@ -3,36 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Application Météo</title>
+    <title>Rennes Météo</title>
 
-    <!-- Liens vers vos fichiers CSS -->
     <link rel="stylesheet" href="css/style.css">
-
-    <!-- Liens vers les bibliothèques ou fichiers JS nécessaires -->
-    <!-- Par exemple, si vous utilisez jQuery -->
-    <!-- <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script> -->
-
-    <!-- Votre fichier JavaScript -->
     <script src="js/meteo.js" defer></script>
+
 </head>
 <body>
-
-    <!-- Contenu de votre application -->
     <div id="app">
-        <!-- Vous pouvez ajouter ici les éléments HTML qui seront manipulés par votre script JavaScript -->
-        <!-- Par exemple, les div où vous afficherez les données météo -->
         <div id="backgroundRect">
             <div id="canvasRight">
                 <p id="city">Rennes</p>
                 <p id="state">Bretagne, France</p>
                 <p id="temp">température</p>
-                <img id="wind_icon" src="css/assets/wind_icon.png">
-                <p id="wind_speed">vitesse du vent</p>
+                <img id="windIcon" src="css/assets/wind_icon.png">
+                <p id="windSpeed">vitesse du vent</p>
             </div>
             <div id="canvasLeft">
                 <p id="time">heure</p>
-                <img id="weather_icon" src="">
-                <p id="weather_description">temps</p>      
+                <img id="weatherIcon" src="">
+                <p id="weatherDescription">temps</p>      
             </div>
         </div>
     </div>
