@@ -14,9 +14,13 @@ var seconds;
 var formatted_time;
 
 
+document.addEventListener("DOMContentLoaded", function() {
+    sendAPIRequest(true);
+    sendWeatherCodesRequest();
+})
 
 
-function sendAPIRequest(){
+function sendAPIRequest(first_request){
     //https://open-meteo.com/en/docs/meteofrance-api#latitude=48.112&longitude=-1.6743&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,showers,snowfall,weather_code,cloud_cover,pressure_msl,surface_pressure,wind_speed_10m,wind_direction_10m,wind_gusts_10m&hourly=&timezone=Europe%2FBerlin
     var requestURL = "https://api.open-meteo.com/v1/meteofrance?latitude=48.112&longitude=-1.6743&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,showers,snowfall,weather_code,cloud_cover,pressure_msl,surface_pressure,wind_speed_10m,wind_direction_10m,wind_gusts_10m&timezone=Europe%2FBerlin";
     var requestWeather = new XMLHttpRequest();
@@ -27,6 +31,11 @@ function sendAPIRequest(){
     requestWeather.onload = function () {
         var weather = requestWeather.response;
         getWeatherData(weather);
+        if (first_request) {
+            refresh(true);
+            setInterval(refresh, 60000);
+        }
+        
     }
 }
 
@@ -45,7 +54,7 @@ function sendWeatherCodesRequest(){
 
 
 
-function getWeatherData(jsonObj) {
+function getWeatherData(jsonObj) {    
     temperature = jsonObj.current.temperature_2m + " " + jsonObj.current_units.temperature_2m;
     wind_dir = jsonObj.current.wind_direction_10m + " " + jsonObj.current_units.wind_direction_10m;
     wind_speed = jsonObj.current.wind_speed_10m + " " + jsonObj.current_units.wind_speed_10m;
@@ -60,43 +69,47 @@ function getWeatherData(jsonObj) {
         weather_description = list_of_weather_codes[weather_code].night.description;
         icon = list_of_weather_codes[weather_code].night.image;
     }
-    refresh();
+
 }
 
-function refresh(){
+function refresh(first_refresh){
     date = new Date();
     hours = date.getHours();
     minutes = date.getMinutes();
     seconds = date.getSeconds();
     formatted_time = hours + ":" + (minutes < 10 ? "0" + minutes : minutes);
 
-    console.log(date);
-
-    if (minutes == 0 && seconds == 0){
+    if (minutes == 0 || first_refresh){
         sendAPIRequest();
+        display("display all");
     }
-
-    display();
+    else{
+        display("only hour");
+    }
 }
 
-function display(){
-    document.getElementById("time").innerHTML = formatted_time;
-    console.log("Heure : " + formatted_time);
-    document.getElementById("temp").innerHTML = temperature;
-    console.log("Température : " + temperature);
-    document.getElementById("wind_dir").innerHTML = wind_dir;
-    console.log("Direction du vent : " + wind_dir);
-    document.getElementById("wind_speed").innerHTML = wind_speed;
-    console.log("Vitesse du vent : " + wind_speed);
-    document.getElementById("weather_description").innerHTML = weather_description;
-    console.log("Temps : " + weather_description);
-    document.getElementById("icon").src = icon;
-    console.log("Jour ? " + is_day);
-    console.log("Icon : " + icon);
+function display(elements){
+    console.log(elements);
+    switch (elements){
+        case "display all":
+            document.getElementById("time").innerHTML = formatted_time;
+            console.log("Heure : " + formatted_time);
+            document.getElementById("temp").innerHTML = temperature;
+            console.log("Température : " + temperature);
+            document.getElementById("wind_dir").innerHTML = wind_dir;
+            console.log("Direction du vent : " + wind_dir);
+            document.getElementById("wind_speed").innerHTML = wind_speed;
+            console.log("Vitesse du vent : " + wind_speed);
+            document.getElementById("weather_description").innerHTML = weather_description;
+            console.log("Temps : " + weather_description);
+            document.getElementById("icon").src = icon;
+            console.log("Jour ? " + is_day);
+            console.log("Icon : " + icon);
+            break;
+        case "only hour":
+            document.getElementById("time").innerHTML = formatted_time;
+            // console.log("Heure : " + formatted_time);
+            break;
+    }
 }
 
-document.addEventListener("DOMContentLoaded", function() {
-    sendAPIRequest();
-    sendWeatherCodesRequest();
-    setInterval(refresh, 60000);
-})
