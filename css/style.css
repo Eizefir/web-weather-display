@@ -17,8 +17,11 @@ body {
 
 #backgroundRect {
     position: absolute;
-    top: 35%;
-    left: 35%;
+    margin: auto;
+    top: 0%;
+    left: 0%;
+    bottom: 0%;
+    right: 0%;
     width: 500px;
     height: 250px;
     background-color: rgba(0, 0, 0, 0.7);
@@ -38,14 +41,14 @@ body {
 }
 
 #time {
-    font-size: 24px;
+    font-size: 20px;
     margin-top: 10px;
     margin-bottom: -10px;
 }
 
 #weatherIcon {
     width: 170px;
-    margin-left: -20px;
+    margin-left: -15px;
     margin-bottom: -60px;
 }
 
@@ -76,7 +79,7 @@ body {
 }
 
 #windSpeed {
-    margin-top: -45px;
+    margin-top: -35px;
     margin-left: 60px;
     font-size: 32px;
 }
