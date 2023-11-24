@@ -1,5 +1,3 @@
-var first_load;
-
 var temperature;
 var wind_dir;
 var wind_speed;
@@ -14,7 +12,10 @@ var date_options;
 var date_formatter;
 var french_date;
 
-//Chargement de la page, envoie des requêtes
+var first_load;
+
+
+//Chargement de la page, envoi des requêtes JSON
 document.addEventListener("DOMContentLoaded", function() {
     first_load = true;
     sendAPIRequest();
@@ -23,8 +24,8 @@ document.addEventListener("DOMContentLoaded", function() {
 
 
 function sendAPIRequest(){
-    //Informations météos récupérés à partir de l'API MeteoFrance : https://open-meteo.com/en/docs/meteofrance-api#latitude=48.112&longitude=-1.6743&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,showers,snowfall,weather_code,cloud_cover,pressure_msl,surface_pressure,wind_speed_10m,wind_direction_10m,wind_gusts_10m&hourly=&timezone=Europe%2FBerlin
-    //La latitude (48.112) et la longitude (-1.6743) renseignés sont celle de Rennes
+    //Informations météos récupérées à partir de l'API MeteoFrance : https://open-meteo.com/en/docs/meteofrance-api#latitude=48.112&longitude=-1.6743&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,showers,snowfall,weather_code,cloud_cover,pressure_msl,surface_pressure,wind_speed_10m,wind_direction_10m,wind_gusts_10m&hourly=&timezone=Europe%2FBerlin
+    //La latitude (48.112) et la longitude (-1.6743) renseignée sont celles de Rennes
     var requestURL = "https://api.open-meteo.com/v1/meteofrance?latitude=48.112&longitude=-1.6743&current=temperature_2m,apparent_temperature,is_day,weather_code,wind_speed_10m,wind_direction_10m&timezone=Europe%2FBerlin";
     var requestWeather = new XMLHttpRequest();
     requestWeather.open("GET", requestURL);
@@ -34,18 +35,17 @@ function sendAPIRequest(){
     requestWeather.onload = function () {
         var weather = requestWeather.response;
         getWeatherData(weather);
-        //Si c'est la première fois que la page charge, alors j'appelle fonction refresh et je démarre mon interval
+        //J'appelle fonction refresh et je démarre mon interval au premier chargement de la page
         if (first_load) {
-            console.log(first_load);
             refresh();
             setInterval(refresh, 60000);
         }
-        
     }
 }
 
+
 function sendWeatherCodesRequest(){
-    //J'ai récupéré le fichier json suivant https://gist.github.com/stellasphere/9490c195ed2b53c707087c8c2db4ec0c et j'ai traduit les descriptions en français
+    //J'ai récupéré le fichier json suivant https://gist.github.com/stellasphere/9490c195ed2b53c707087c8c2db4ec0c et j'ai traduit les descriptions météos en français
     var jsonWeatherCodesRoot = "json/weather_codes.json";
     var requestWeatherCodes = new XMLHttpRequest();
     requestWeatherCodes.open("GET", jsonWeatherCodesRoot);
@@ -58,16 +58,15 @@ function sendWeatherCodesRequest(){
 }
 
 
-
 function getWeatherData(jsonObj) {
-    //Je stock dans les variables correspondentes, les valeurs du fichier Json généré
+    //A partir du fichier JSON généré, je stock les données météos dans les variables correspondantes
     temperature = jsonObj.current.temperature_2m + " " + jsonObj.current_units.temperature_2m;
     wind_dir = jsonObj.current.wind_direction_10m;
     wind_speed = jsonObj.current.wind_speed_10m + " " + jsonObj.current_units.wind_speed_10m;
     weather_code = jsonObj.current.weather_code;
     is_day = jsonObj.current.is_day;
 
-    //Suivant le code météo de mon premier fichier json, je vais récupéré dans mon deuxième json la description et l'icon météo correspondants
+    //Suivant le code météo et le cycle jour/nuit, je vais récupérer dans mon fichier json weather_code la description et l'icon météo correspondants
     if (is_day){
         weather_description = list_of_weather_codes[weather_code].day.description;
         weather_icon = list_of_weather_codes[weather_code].day.image;
@@ -76,12 +75,11 @@ function getWeatherData(jsonObj) {
         weather_description = list_of_weather_codes[weather_code].night.description;
         weather_icon = list_of_weather_codes[weather_code].night.image;
     }
-
 }
 
-function refresh(){
-    //Mon interval relance cette fonction toutes les 60s, ce qui me permet d'actualiser ma date et mon heure
 
+function refresh(){
+    //Actualisation de la date et l'heure toutes les 60 secondes par l'action de mon Interval
     date = new Date();
     date_options = { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' };
     formatter = new Intl.DateTimeFormat('fr-FR', date_options);    
@@ -98,24 +96,17 @@ function refresh(){
     }
 }
 
+
 function display(elements){
     //Mise à jour de l'affichage suivant le paramètre renseigné
-    console.log(elements);
     switch (elements){
         case "display all":
             document.getElementById("time").innerHTML = french_date;
-            console.log("Heure : " + french_date);
             document.getElementById("temp").innerHTML = temperature;
-            console.log("Température : " + temperature);
             document.getElementById("windIcon").style.transform = 'rotate('+ wind_dir + 'deg)';
-            console.log("Direction du vent : " + wind_dir);
             document.getElementById("windSpeed").innerHTML = wind_speed;
-            console.log("Vitesse du vent : " + wind_speed);
             document.getElementById("weatherDescription").innerHTML = weather_description;
-            console.log("Temps : " + weather_description);
             document.getElementById("weatherIcon").src = weather_icon;
-            console.log("Jour ? " + is_day);
-            console.log("Icon : " + weather_icon);
             break;
         case "only hour":
             document.getElementById("time").innerHTML = french_date;
