@@ -15,15 +15,30 @@ var french_date;
 var first_load;
 
 
-//Chargement de la page, envoi des requêtes JSON
+//Chargement de la page, envoi de la première requête JSON permettant la récupération des codes météos
 document.addEventListener("DOMContentLoaded", function() {
     first_load = true;
-    sendAPIRequest();
     sendWeatherCodesRequest();
 })
 
 
-function sendAPIRequest(){
+function sendWeatherCodesRequest(){
+    //J'ai récupéré le fichier json suivant https://gist.github.com/stellasphere/9490c195ed2b53c707087c8c2db4ec0c et j'ai traduit les descriptions météos en français
+    var jsonWeatherCodesRoot = "json/weather_codes.json";
+    var requestWeatherCodes = new XMLHttpRequest();
+    requestWeatherCodes.open("GET", jsonWeatherCodesRoot);
+    requestWeatherCodes.responseType = "json";
+    requestWeatherCodes.send();
+
+    //Une fois que j'ai récupéré et stocker le résultat de ma request, j'envoie la deuxième me permettant de récupérer les données météos
+    requestWeatherCodes.onload = function(){
+        list_of_weather_codes = requestWeatherCodes.response;
+        sendAPIWeatherRequest();
+    }
+}
+
+
+function sendAPIWeatherRequest(){
     //Informations météos récupérées à partir de l'API MeteoFrance : https://open-meteo.com/en/docs/meteofrance-api#latitude=48.112&longitude=-1.6743&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,precipitation,rain,showers,snowfall,weather_code,cloud_cover,pressure_msl,surface_pressure,wind_speed_10m,wind_direction_10m,wind_gusts_10m&hourly=&timezone=Europe%2FBerlin
     //La latitude (48.112) et la longitude (-1.6743) renseignée sont celles de Rennes
     var requestURL = "https://api.open-meteo.com/v1/meteofrance?latitude=48.112&longitude=-1.6743&current=temperature_2m,apparent_temperature,is_day,weather_code,wind_speed_10m,wind_direction_10m&timezone=Europe%2FBerlin";
@@ -44,29 +59,15 @@ function sendAPIRequest(){
 }
 
 
-function sendWeatherCodesRequest(){
-    //J'ai récupéré le fichier json suivant https://gist.github.com/stellasphere/9490c195ed2b53c707087c8c2db4ec0c et j'ai traduit les descriptions météos en français
-    var jsonWeatherCodesRoot = "json/weather_codes.json";
-    var requestWeatherCodes = new XMLHttpRequest();
-    requestWeatherCodes.open("GET", jsonWeatherCodesRoot);
-    requestWeatherCodes.responseType = "json";
-    requestWeatherCodes.send();
-
-    requestWeatherCodes.onload = function(){
-        list_of_weather_codes = requestWeatherCodes.response;
-    }
-}
-
-
 function getWeatherData(jsonObj) {
-    //A partir du fichier JSON généré, je stock les données météos dans les variables correspondantes
+    //A partir du fichier JSON généré par mon API, je stock les données météos dans les variables correspondantes
     temperature = jsonObj.current.temperature_2m + " " + jsonObj.current_units.temperature_2m;
     wind_dir = jsonObj.current.wind_direction_10m;
     wind_speed = jsonObj.current.wind_speed_10m + " " + jsonObj.current_units.wind_speed_10m;
     weather_code = jsonObj.current.weather_code;
     is_day = jsonObj.current.is_day;
 
-    //Suivant le code météo et le cycle jour/nuit, je vais récupérer dans mon fichier json weather_code la description et l'icon météo correspondants
+    //Suivant le code météo et le cycle jour/nuit, je récupère la description et l'icon météo correspondants
     if (is_day){
         weather_description = list_of_weather_codes[weather_code].day.description;
         weather_icon = list_of_weather_codes[weather_code].day.image;
@@ -79,16 +80,16 @@ function getWeatherData(jsonObj) {
 
 
 function refresh(){
-    //Actualisation de la date et l'heure toutes les 60 secondes par l'action de mon Interval
+    //Actualisation de la date et l'heure toutes les 60 secondes par l'action de mon interval
     date = new Date();
     date_options = { weekday: 'short', month: 'short', day: 'numeric', hour: 'numeric', minute: 'numeric' };
     formatter = new Intl.DateTimeFormat('fr-FR', date_options);    
     french_date = formatter.format(date);
 
-    //Si la minute de ma date égal 0, cela signifie qu'une heure s'est passée et donc je renvoie une requête API afin de récupérer les données météo actuelle
+    //Si la minute de ma date égal 0, cela signifie qu'une heure s'est passée et donc je renvoie une requête JSON à mon API afin de récupérer les données météo actuelle
     if (date.getMinutes() == 0 || first_load){
         first_load = false;
-        sendAPIRequest();
+        sendAPIWeatherRequest();
         display("display all");
     }
     else{
@@ -99,6 +100,7 @@ function refresh(){
 
 function display(elements){
     //Mise à jour de l'affichage suivant le paramètre renseigné
+    console.log(elements);
     switch (elements){
         case "display all":
             document.getElementById("time").innerHTML = french_date;
@@ -107,6 +109,15 @@ function display(elements){
             document.getElementById("windSpeed").innerHTML = wind_speed;
             document.getElementById("weatherDescription").innerHTML = weather_description;
             document.getElementById("weatherIcon").src = weather_icon;
+
+            //Tests afin de s'assurer que la météo s'actualise bien toutes les heures
+            console.log("Date : " + french_date);
+            console.log("Température : " + temperature);
+            console.log("Direction du vent : " + wind_dir);
+            console.log("Vitesse du vent : " + wind_speed);
+            console.log("Description : " + weather_description);
+            console.log("Icon : " + weather_icon);
+
             break;
         case "only hour":
             document.getElementById("time").innerHTML = french_date;
